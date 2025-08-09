@@ -26,6 +26,7 @@ export default function Dashboard({isChatVisible,setIsChatVisible}){
      <div className="friends-list w-full grow flex flex-col p-3">
                <SearchBar/>
                <div className="grow">
+                <p className="my-2 font-semibold text-lg">Friends</p>
                  {allFriends && allChats?.map(chat=>{
                   const userId=chat.users.find(id=>id!==currentUserData.$id)
                   const friend=allFriends.find(user=>user.$id===userId)
