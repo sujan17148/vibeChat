@@ -10,6 +10,7 @@ import UserProfile from "./UserProfile";
 export default function ChatUi({isChatVisible,setIsChatVisible}) {
   const dispatch=useDispatch()
   const { activeChat, allFriends } = useSelector((state) => state.extraInfo);
+  const [activeUser, setActiveUser] = useState(null);
   const currentUserData = useSelector(
     (state) => state.currentUser.currentUserData
   );
@@ -17,8 +18,6 @@ export default function ChatUi({isChatVisible,setIsChatVisible}) {
    const unSubscribe= dataBaseService.watchChat(dispatch,currentUserData?.$id)
    return ()=>unSubscribe()
   }, []);
-
-  const [activeUser, setActiveUser] = useState(null);
   useEffect(() => {
     if (activeChat && allFriends) {
       const userId = activeChat.users.find((id) => id !== currentUserData.$id);
