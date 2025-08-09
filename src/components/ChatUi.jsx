@@ -9,24 +9,18 @@ import UserProfile from "./UserProfile";
 
 export default function ChatUi({isChatVisible,setIsChatVisible}) {
   const dispatch=useDispatch()
+  const currentUserData = useSelector((state) => state.currentUser.currentUserData);
   const { activeChat, allFriends } = useSelector((state) => state.extraInfo);
-  const [activeUser, setActiveUser] = useState(null);
-  const currentUserData = useSelector(
-    (state) => state.currentUser.currentUserData
-  );
+  const activeUser = activeChat && allFriends
+  ? allFriends.find((user) => activeChat.users.includes(user.$id) && user.$id !== currentUserData.$id)
+  : null;
+
   useEffect(() => {
    const unSubscribe= dataBaseService.watchChat(dispatch,currentUserData?.$id)
    return ()=>unSubscribe()
   }, []);
-  useEffect(() => {
-    if (activeChat && allFriends) {
-      const userId = activeChat.users.find((id) => id !== currentUserData.$id);
-      setActiveUser(allFriends.find((user) => user.$id === userId));
-    }
-  }, [activeChat]);
   return <div className={`${isChatVisible ? "flex" :"hidden"} sm:flex h-full w-full justify-center items-center`}> 
-   { activeChat &&
-    activeUser ? (
+   { activeChat ? activeUser && (
       <div className="flex  bg-secondary  w-full  h-full flex-col  sm:flex  text-text ">
         <div className="profile-section h-16 border-b border-b-text w-full flex items-center gap-2 p-2">
           <ArrowLeft onClick={()=>setIsChatVisible(false)} className="sm:hidden  h-8 w-8  rounded-full flex items-center justify-center hover:bg-slate-400/30 p-1.5"/>
