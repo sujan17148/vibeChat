@@ -1,6 +1,6 @@
 import { Client, Databases, ID,Permission,Query,Role } from "appwrite";
 import conf from "../conf/conf";
-import { fetchAllChats, fetchAllFriends, updateChatsLocally,} from "../store/extraInfoSlice";
+import { fetchAllChats, fetchAllFriends,updateChatsLocally,updateLastSentMessageLocally} from "../store/extraInfoSlice";
 import store from "../store/store"
 
 class DataBaseService {
@@ -133,6 +133,20 @@ try{
      console.log("appwrite get message ",error.message)
     }
    }
+   async getLastMessage(messageId){
+    try {
+      return await this.databases.getDocument(conf.appwriteDatabaseId,conf.appwriteMessageCollectionId,messageId)
+     } catch (error) {
+      console.log("appwrite get message ",error.message)
+     }
+   }
+
+//watch changes in messages
+watchMessages(dispatch){
+return this.client.subscribe( `databases.${conf.appwriteDatabaseId}.collections.${conf.appwriteMessageCollectionId}.documents`,response=>{
+      dispatch(updateLastSentMessageLocally(response.payload))
+})
+}
 
 //watch changes in chat
 watchChat(dispatch,currentUserId) {

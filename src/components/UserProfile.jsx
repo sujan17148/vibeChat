@@ -16,8 +16,8 @@ export default function UserProfile({username,avatar,...props}){
       props.setIsChatVisible(true)
     }
   }
-    return <div onClick={()=>props.isClickable && handleActiveChatChange()} className={`${props?.isClickable ? "p-3 hover:bg-slate-600/30": ""}  flex items-center justify-between  rounded`}> 
-  <div  className="flex items-center  gap-3">
+    return <div onClick={()=>props.isClickable && handleActiveChatChange()} className={`${props?.isClickable ? "p-3 hover:bg-slate-600/30": ""}   flex items-center justify-between  rounded`}> 
+  <div  className="flex items-center gap-3">
      {avatar ?  <img
          src={fileService.getAvatarView(avatar)}
          alt="avatar"
@@ -25,7 +25,7 @@ export default function UserProfile({username,avatar,...props}){
         <span className="avatar  w-10 h-10 text-2xl rounded-full text-white bg-slate-400/30 flex justify-center items-center capitalize">{username.split("")[0]}</span>
         }
         <div><p className="capitalize">{username}</p>
-        {props.lastMessage && <p>{props.lastMessage}</p>}</div>
+        {props.lastMessage && <p className="line-clamp-1">{props.lastMessage}</p>}</div>
      </div>
      {props.lastSentAt && <p className="text-sm">{formatDate(props.lastSentAt)}</p>}
      {!currentUserData?.friends.includes(props.$id) && props.isNotFriend &&  <AddFriendButton $id={props.$id} setSearchValue={props.setSearchValue}/>}

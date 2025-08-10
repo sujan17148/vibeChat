@@ -55,6 +55,10 @@ const extraInfoslice = createSlice({
       state.allChats=[]
     }
     state.allChats.unshift(action.payload)
+  },
+  updateLastSentMessageLocally:(state,action)=>{
+    const {chatId}=action.payload
+    state.allMessages[chatId].unshift(action.payload)
   }
   },
   extraReducers: (builder) => {
@@ -75,5 +79,5 @@ const extraInfoslice = createSlice({
   },
 });
 
-export const {updateActiveChat,updateChatsLocally,updateMessagesLocally,addChat,addFriendToAllFriends}=extraInfoslice.actions
+export const {updateActiveChat,updateChatsLocally,updateLastSentMessageLocally,addChat,addFriendToAllFriends}=extraInfoslice.actions
 export default extraInfoslice.reducer;

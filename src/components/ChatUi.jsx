@@ -8,17 +8,11 @@ import UserProfile from "./UserProfile";
 
 
 export default function ChatUi({isChatVisible,setIsChatVisible}) {
-  const dispatch=useDispatch()
   const currentUserData = useSelector((state) => state.currentUser.currentUserData);
   const { activeChat, allFriends } = useSelector((state) => state.extraInfo);
   const activeUser = activeChat && allFriends
   ? allFriends.find((user) => activeChat.users.includes(user.$id) && user.$id !== currentUserData.$id)
   : null;
-
-  useEffect(() => {
-   const unSubscribe= dataBaseService.watchChat(dispatch,currentUserData?.$id)
-   return ()=>unSubscribe()
-  }, []);
   return <div className={`${isChatVisible ? "flex" :"hidden"} sm:flex h-full w-full justify-center items-center`}> 
    { !activeChat ? 
    <h1 className="text-center text-white text-3xl font-semibold">✨ Break the silence. Send your first message!</h1>:
@@ -44,7 +38,9 @@ function ChatSection({activeChat}){
   useEffect(()=>{
     if(activeChat){
       chatBoxRef.current.scrollTop=chatBoxRef.current.scrollHeight
-     dispatch(fetchAllMessages(activeChat.$id))
+      if (!allMessages[activeChat.$id] || allMessages[activeChat.$id].length === 0) {
+        dispatch(fetchAllMessages(activeChat.$id));
+      }
     }
   },[activeChat])
   const allMessages=useSelector(state=>state.extraInfo.allMessages)
