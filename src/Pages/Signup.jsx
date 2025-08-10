@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate,Link } from "react-router-dom";
 import { fetchCurrentUserInfo, login } from "../store/currentUserSlice";
 import { fetchAllChats,fetchAllFriends } from "../store/extraInfoSlice";
-import getDefaultAvatar from "../utility/getDefaultAvatar"
+import { toast } from "react-toastify";
 
 
 // 1. Define your Zod schema
@@ -49,6 +49,7 @@ export default function Signup() {
           await authService.createAccount(data)
             const currentUser=await authService.getCurrentUser()
             if(currentUser){
+              toast.success("🎉 Account created! Let’s get started.");
               const customUser={
                 username:data.username,
                 email:data.email,
@@ -69,6 +70,7 @@ export default function Signup() {
             }
           
       } catch (error) {
+        toast.error("❌ Sign-up failed. Try again.");
         setError(error.message)
       }
   }

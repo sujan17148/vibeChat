@@ -5,6 +5,7 @@ import { addFriend } from "../store/currentUserSlice";
 import { addChat, addFriendToAllFriends, updateActiveChat } from "../store/extraInfoSlice";
 import getDefaultMessage from "../utility/getDefaultMessage"
 import { useState } from "react";
+import { toast } from "react-toastify";
 export default function AddFriendButton({$id,setSearchValue}){
     const [loading, setLoading] = useState(false);
     const dispatch=useDispatch()
@@ -20,9 +21,13 @@ export default function AddFriendButton({$id,setSearchValue}){
             lastSentAt:new Date("2000-01-01T00:00:00.000Z"),
             lastMessage:getDefaultMessage()
             }
-            if(friendUser.friends.includes(currentUserData.$id)) throw new Error("already in the friend list")
+            if(friendUser.friends.includes(currentUserData.$id)){
+               toast.error(`🤝 You’re already friends with ${friendUser.username}!`);
+               return;
+            } 
             await databaseServie.updateFriend({userId:currentUserData.$id,friends:[...currentUserData.friends,$id]})
             await databaseServie.updateFriend({userId:$id,friends:[...friendUser.friends,currentUserData.$id]})
+            toast.success(`🤝 You’re now friends with ${friendUser.username}!`); 
             dispatch(addFriend($id))
             const activeChat= await databaseServie.createChat(chatPayload)
             dispatch(addChat(activeChat))
@@ -30,6 +35,7 @@ export default function AddFriendButton({$id,setSearchValue}){
             dispatch(updateActiveChat(activeChat))
         }
      } catch (error) {
+      toast.error("⚠️ Couldn't add friend."); 
         console.log(error.message)
      }
      finally{

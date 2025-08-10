@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye,EyeOff } from "lucide-react";
 import Input from "../components/Input";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import { fetchCurrentUserInfo, login } from "../store/currentUserSlice";
 import authService from "../appwrite/auth"
@@ -34,6 +35,7 @@ export default function Login() {
             const loginResponse=await authService.login(data)
             if(loginResponse){
                 const currentUser=await authService.getCurrentUser()
+                toast.success("✅ Welcome back! You're in.");  
                 if(currentUser){
                     dispatch(login())
                     dispatch(fetchCurrentUserInfo(currentUser.$id))
@@ -47,6 +49,7 @@ export default function Login() {
                 }
             }
         } catch (error) {
+          toast.error("⚠️ Oops! Couldn't log you in.");
             setError(error.message)
         }
     }

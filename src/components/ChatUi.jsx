@@ -20,7 +20,9 @@ export default function ChatUi({isChatVisible,setIsChatVisible}) {
    return ()=>unSubscribe()
   }, []);
   return <div className={`${isChatVisible ? "flex" :"hidden"} sm:flex h-full w-full justify-center items-center`}> 
-   { activeChat ? activeUser && (
+   { !activeChat ? 
+   <h1 className="text-center text-white text-3xl font-semibold">✨ Break the silence. Send your first message!</h1>:
+   activeUser && (
       <div className="flex  bg-secondary  w-full  h-full flex-col  sm:flex  text-text ">
         <div className="profile-section h-16 border-b border-b-text w-full flex items-center gap-2 p-2">
           <ArrowLeft onClick={()=>setIsChatVisible(false)} className="sm:hidden  h-8 w-8  rounded-full flex items-center justify-center hover:bg-slate-400/30 p-1.5"/>
@@ -32,8 +34,7 @@ export default function ChatUi({isChatVisible,setIsChatVisible}) {
           currentUserData={currentUserData}
           />
       </div>
-    ):
-    <h1 className="text-center text-white text-3xl font-semibold">✨ Break the silence. Send your first message!</h1>}
+    )}
           </div>
 }
 

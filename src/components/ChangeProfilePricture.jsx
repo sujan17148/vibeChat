@@ -2,6 +2,7 @@ import fileService from "../appwrite/fileDatabaseService"
 import dataBaseService from "../appwrite/databaseService"
 import { useDispatch, useSelector } from "react-redux"
 import { changeAvater } from "../store/currentUserSlice"
+import { toast } from "react-toastify"
 
 export default function ChangeProfilePicture({setIsMenuHidden,className=""}){
     const currentUserData=useSelector(state=>state.currentUser.currentUserData)
@@ -25,7 +26,9 @@ export default function ChangeProfilePicture({setIsMenuHidden,className=""}){
            await dataBaseService.updateAvatar({userId:currentUserData.$id,avatar:fileUploadResponse.$id})
         }
     }
+    toast.success("🖼️ Profile picture updated!");  
    } catch (error) {
+    toast.error("⚠️ Couldn't update profile."); 
     console.log(error)
    }
        
