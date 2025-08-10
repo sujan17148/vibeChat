@@ -114,9 +114,9 @@ try{
   }
 
   //message realated service
-   async createMessage({chatId,senderId,content,sentAt}){
+   async createMessage({chatId,senderId,content,sentAt,contentType="text"}){
      try {
-      return  await this.databases.createDocument(conf.appwriteDatabaseId,conf.appwriteMessageCollectionId,ID.unique(),{chatId,senderId,content,sentAt})
+      return  await this.databases.createDocument(conf.appwriteDatabaseId,conf.appwriteMessageCollectionId,ID.unique(),{chatId,senderId,content,sentAt,contentType})
      } catch (error) {
       console.log("appwrite create message ",error.message)
      }

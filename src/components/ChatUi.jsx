@@ -39,8 +39,8 @@ function ChatSection({activeChat}){
     if(activeChat){
       chatBoxRef.current.scrollTop=chatBoxRef.current.scrollHeight
       if (!allMessages[activeChat.$id] || allMessages[activeChat.$id].length === 0) {
-        dispatch(fetchAllMessages(activeChat.$id));
-      }
+      dispatch(fetchAllMessages(activeChat.$id));
+    }
     }
   },[activeChat])
   const allMessages=useSelector(state=>state.extraInfo.allMessages)
