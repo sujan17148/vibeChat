@@ -15,7 +15,7 @@ export default function Dashboard({isChatVisible,setIsChatVisible}){
       dispatch(updateActiveChat(allChats[0]))
      }
   },[allChats])
-    return currentUserData && <div className={`${isChatVisible ? "hidden": "flex"} sm:flex w-screen bg-secondary sm:max-w-105 md:1/3  hide-scrollbar sm:border-r text-text border-r-text h-screen  flex-col`}>
+    return currentUserData && <div className={`${isChatVisible ? "hidden": "flex"} sm:flex w-screen bg-secondary sm:max-w-105 md:1/3  hide-scrollbar sm:border-r text-text border-r-text h-[100dvh]  flex-col`}>
     <div className="h-16 w-full flex items-center justify-between border-b border-b-text p-5">
       <p className="font-semibold text-2xl">VibeChat</p>
        <Menu/>

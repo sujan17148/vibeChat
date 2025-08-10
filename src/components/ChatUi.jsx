@@ -13,7 +13,7 @@ export default function ChatUi({isChatVisible,setIsChatVisible}) {
   const activeUser = activeChat && allFriends
   ? allFriends.find((user) => activeChat.users.includes(user.$id) && user.$id !== currentUserData.$id)
   : null;
-  return <div className={`${isChatVisible ? "flex" :"hidden"} sm:flex h-full w-full justify-center items-center`}> 
+  return <div className={`${isChatVisible ? "flex" :"hidden"} sm:flex h-[100dvh] w-full justify-center items-center`}> 
    { !activeChat ? 
    <h1 className="text-center text-white text-3xl font-semibold">✨ Break the silence. Send your first message!</h1>:
    activeUser && (
