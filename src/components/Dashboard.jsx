@@ -21,7 +21,7 @@ export default function Dashboard({isChatVisible,setIsChatVisible}){
        <Menu/>
     </div>
 
-     <div className="friends-list w-full max-h-[calc(100dvh-128px)] grow flex flex-col p-3">
+     <div className="friends-list w-full hide-scrollbar overflow-y-auto grow flex flex-col p-3">
                <SearchBar setIsChatVisible={setIsChatVisible}/>
                <div className="grow">
                 <p className="my-2 font-semibold text-lg">Friends</p>
