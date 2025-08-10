@@ -4,9 +4,7 @@ import dataBaseService from "../appwrite/databaseService";
 import { Query } from "appwrite";
 import UserProfile from "./UserProfile"
 import { useSelector } from "react-redux";
-import AddFriendButton from "./AddFriendButton";
-
-export default function SearchBar() {
+export default function SearchBar({setIsChatVisible}) {
   const [searchValue, setSearchValue] = useState("");
   const {debouncedValue}=useDebounce(searchValue)
   return (
@@ -18,12 +16,12 @@ export default function SearchBar() {
         onChange={(e) => setSearchValue(e.target.value)}
         className="w-full outline-none border-accent border-2 p-2 rounded"
       />
-      <ShowSuggestion debouncedValue={debouncedValue} setSearchValue={setSearchValue}/>
+      <ShowSuggestion debouncedValue={debouncedValue} setSearchValue={setSearchValue} setIsChatVisible={setIsChatVisible}/>
     </div>
   );
 }
 
-function ShowSuggestion({debouncedValue,setSearchValue}){
+function ShowSuggestion({debouncedValue,setSearchValue,setIsChatVisible}){
     const [allUsers,setAllUsers]=useState(null)
     const currentUserData=useSelector(state=>state.currentUser.currentUserData)
 useEffect(()=>{
@@ -39,13 +37,6 @@ useEffect(()=>{
     }
 },[debouncedValue])
 return allUsers && <div className="h-fit w-full">
-     {allUsers?.map((user,index)=><AddFriendProfiles key={index} username={user.username} avatar={user.avatar} $id={user.$id} setSearchValue={setSearchValue}/>)}
+     {allUsers?.map((user,index)=><UserProfile key={index} username={user.username} avatar={user.avatar} $id={user.$id} setIsChatVisible={setIsChatVisible} setSearchValue={setSearchValue} isClickable={true} isNotFriend={!currentUserData?.friends.includes(user.$id)}/>)}
 </div>
-}
-
-function AddFriendProfiles({$id,setSearchValue,username,avatar}){
-  return  <div className="user-profile flex items-center justify-between w-full h-16 p-3 hover:bg-slate-600/30 rounded my-2">
-    <UserProfile username={username} avatar={avatar}/>
-    <AddFriendButton $id={$id} setSearchValue={setSearchValue}/>
-  </div>
 }
