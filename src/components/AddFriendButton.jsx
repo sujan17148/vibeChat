@@ -19,7 +19,8 @@ export default function AddFriendButton({$id,setSearchValue}){
          const chatPayload={
             users:[currentUserData.$id,friendUser.$id],
             lastSentAt:new Date("2000-01-01T00:00:00.000Z"),
-            lastMessage:getDefaultMessage()
+            lastMessage:getDefaultMessage(),
+            lastMessageType:"text"
             }
             if(friendUser.friends.includes(currentUserData.$id)){
                toast.error(`🤝 You’re already friends with ${friendUser.username}!`);

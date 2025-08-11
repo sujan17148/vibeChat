@@ -82,7 +82,6 @@ function SendMessage({ activeChat, currentUserData }) {
         payloadForUpdateChat={...payloadForUpdateChat,lastMessageType:"text",lastMessage:message}
         
       }
-      console.log(payloadForUpdateChat)
       await dataBaseService.createMessage(payLoad);
       await dataBaseService.updateChat(payloadForUpdateChat);
       dispatch(updateChatsLocally(payloadForUpdateChat));
@@ -93,10 +92,10 @@ function SendMessage({ activeChat, currentUserData }) {
     }
   }
   return (
-    <div className="bottom-section h-16 border-t border-t-text w-full flex items-center justify-end p-3 gap-3 ">
+    <div className="bottom-section h-16 border-t border-t-text w-full flex items-center justify-end p-2 gap-1.5 sm:gap-3 ">
 <label
     htmlFor="send-photo"
-    className="whitespace-nowrap relative p-2.5 text-white font-medium rounded-full cursor-pointer bg-accent hover:bg-soft-accent "
+    className="whitespace-nowrap relative p-[6px] sm:p-2.5 text-white font-medium rounded-full cursor-pointer bg-accent hover:bg-soft-accent "
   >
    <Plus/>
     <input
@@ -108,7 +107,7 @@ function SendMessage({ activeChat, currentUserData }) {
     />
 
 {selectedImage && (
-   <span className="absolute bottom-11 left-1/2 -translate-x-[30%] p-1  rounded backdrop-blur-2xl font-normal text-sm bg-slate-400/30 text-center">Image Selected</span>
+   <span className="absolute bottom-11 left-1/2 md:-translate-x-[30%]  p-1  rounded backdrop-blur-2xl font-normal text-sm bg-slate-400/30 text-center">Image Selected</span>
   )}
   </label>
  
@@ -129,7 +128,7 @@ function SendMessage({ activeChat, currentUserData }) {
         onClick={sendMessage}
         className="bg-accent rounded whitespace-nowrap p-2 px-3 flex gap-2 items-center font-semibold text-base hover:scale-105 active:scale-95 transition duration-300 ease-linear hover:bg-sky-700"
       >
-        Send <Send />
+        <span className="hidden sm:inline-block">Send</span> <Send/>
       </button>
     </div>
   );
