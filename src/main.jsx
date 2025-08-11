@@ -21,7 +21,7 @@ pauseOnFocusLoss
 draggable
 pauseOnHover
 theme="dark"
-className="max-w-95 m-2 "
+toastClassName="max-w-95 m-2 "
 />
    <RouterProvider router={router}/>
    </Provider>
