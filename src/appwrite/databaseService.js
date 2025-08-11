@@ -61,7 +61,7 @@ async updateAvatar({userId,avatar}){
 
 
   //chat related services
-  async createChat({ users, lastSentAt,lastMessage}) {
+  async createChat({ users, lastSentAt,lastMessage,lastMessageType="text"}) {
     try {
       return await this.databases.createDocument(
         conf.appwriteDatabaseId,
@@ -70,7 +70,8 @@ async updateAvatar({userId,avatar}){
         {
           users,
           lastSentAt,
-          lastMessage
+          lastMessage,
+          lastMessageType
         },
         [
             Permission.read(Role.any()),
@@ -95,9 +96,9 @@ async updateAvatar({userId,avatar}){
     }
   }
 
-  async updateChat({lastSentAt,chatId,lastMessage}){
+  async updateChat({lastSentAt,chatId,lastMessage,lastMessageType}){
     try {
-      return await this.databases.updateDocument(conf.appwriteDatabaseId,conf.appwriteChatCollectionId,chatId,{lastSentAt,lastMessage})
+      return await this.databases.updateDocument(conf.appwriteDatabaseId,conf.appwriteChatCollectionId,chatId,{lastSentAt,lastMessage,lastMessageType})
     } catch (error) {
       console.log(error)
       throw error
@@ -114,9 +115,9 @@ try{
   }
 
   //message realated service
-   async createMessage({chatId,senderId,content,sentAt,contentType="text"}){
+   async createMessage({chatId,senderId,content,sentAt,contentType,imageURL="null"}){
      try {
-      return  await this.databases.createDocument(conf.appwriteDatabaseId,conf.appwriteMessageCollectionId,ID.unique(),{chatId,senderId,content,sentAt,contentType})
+      return  await this.databases.createDocument(conf.appwriteDatabaseId,conf.appwriteMessageCollectionId,ID.unique(),{chatId,senderId,content,sentAt,contentType,imageURL})
      } catch (error) {
       console.log("appwrite create message ",error.message)
      }
@@ -156,7 +157,8 @@ watchChat(dispatch,currentUserId) {
       const chatPayLoad={
         chatId:response.payload.$id,
         lastMessage:response.payload.lastMessage,
-        lastSentAt:response.payload.lastSentAt
+        lastSentAt:response.payload.lastSentAt,
+        lastMessageType:response.payload.lastMessageType,
       }
       const state=store.getState()
         const isChatAvailable=state.extraInfo.allChats.find(chat=>chat.$id==response.payload.$id)

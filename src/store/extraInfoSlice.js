@@ -36,11 +36,12 @@ const extraInfoslice = createSlice({
    state.activeChat=action.payload
   },
   updateChatsLocally:(state,action)=>{
-    const { chatId, lastMessage, lastSentAt } = action.payload;
+    const { chatId, lastMessage, lastSentAt,lastMessageType } = action.payload;
     const targetChatIndex=state.allChats.findIndex(chat=>chat.$id===chatId)
     if(targetChatIndex!==-1){
       state.allChats[targetChatIndex].lastMessage=lastMessage
       state.allChats[targetChatIndex].lastSentAt=lastSentAt
+      state.allChats[targetChatIndex].lastMessageType=lastMessageType
     }
     state.allChats.sort((a,b)=>new Date(b.lastSentAt)-new Date(a.lastSentAt))
   },
@@ -58,6 +59,9 @@ const extraInfoslice = createSlice({
   },
   updateLastSentMessageLocally:(state,action)=>{
     const {chatId}=action.payload
+    if (!state.allMessages[chatId]) {
+      state.allMessages[chatId] = [];
+    }
     state.allMessages[chatId].unshift(action.payload)
   }
   },

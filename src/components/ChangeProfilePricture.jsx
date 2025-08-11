@@ -11,7 +11,7 @@ export default function ChangeProfilePicture({setIsMenuHidden,className=""}){
         setIsMenuHidden(true)
    try {
     if(currentUserData.avatar==null){
-        const fileUploadResponse=await fileService.createAvatar(event.target.files[0])
+        const fileUploadResponse=await fileService.createFile(event.target.files[0])
         console.log(fileUploadResponse)
         if(fileUploadResponse){
           dispatch(changeAvater(fileUploadResponse.$id))

@@ -28,7 +28,7 @@ export default function Dashboard({isChatVisible,setIsChatVisible}){
                  {allFriends && allChats?.map(chat=>{
                   const userId=chat.users.find(id=>id!==currentUserData.$id)
                   const friend=allFriends.find(user=>user.$id===userId)
-                    return friend && <UserProfile setIsChatVisible={setIsChatVisible} key={chat.$id} $id={friend.$id} username={friend.username} avatar={friend.avatar} lastMessage={chat.lastMessage} lastSentAt={chat.lastSentAt} isClickable={true}/>
+                    return friend && <UserProfile setIsChatVisible={setIsChatVisible} key={chat.$id} $id={friend.$id} username={friend.username} avatar={friend.avatar} lastMessage={chat.lastMessage} lastMessageType={chat.lastMessageType} lastSentAt={chat.lastSentAt} isClickable={true}/>
                  })}
                </div>
             </div>

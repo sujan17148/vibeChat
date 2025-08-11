@@ -8,14 +8,15 @@ function App() {
   const dispatch=useDispatch()
   const currentUserData=useSelector(state=>state.currentUser.currentUserData)
   const {allChats}=useSelector(state=>state.extraInfo)
-  useEffect(() => {
-    const unSubscribe= dataBaseService.watchChat(dispatch,currentUserData?.$id)
-    return ()=>unSubscribe()
-   }, []);
+ 
    useEffect(()=>{
+    const unSubscribeChat= dataBaseService.watchChat(dispatch,currentUserData?.$id)
     if (!allChats || allChats.length === 0) return;
-    const unSubscribe=dataBaseService.watchMessages(dispatch)
-    return ()=>unSubscribe()
+    const unSubscribeMessages=dataBaseService.watchMessages(dispatch)
+    return ()=>{
+      unSubscribeChat()
+      unSubscribeMessages()
+    }
    },[allChats])
   const [isChatVisible,setIsChatVisible]=useState(false)
   return <div className="h-screen w-screen bg-secondary flex">

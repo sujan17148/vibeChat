@@ -1,4 +1,4 @@
-import { Client, Storage, ID,Permission,Role } from "appwrite";
+import { Client, Storage, ID} from "appwrite";
 import conf from "../conf/conf";
 
 class FileService{
@@ -11,14 +11,14 @@ constructor() {
     this.bucket = new Storage(this.client);
   }
 
-  async createAvatar(file){
+  async createFile(file){
     try{
      return await this.bucket.createFile(conf.appwriteProfileBucketId,ID.unique(),file)
     }catch(error){
         console.log("appwrite error creating avatar",error.message)
     }
   }
-   getAvatarView(fileId){
+   getFileView(fileId){
       try {
           return  this.bucket.getFileView(conf.appwriteProfileBucketId,fileId)
       } catch (error) {

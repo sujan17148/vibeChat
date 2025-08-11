@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send,Plus } from "lucide-react";
 import dataBaseService from "../appwrite/databaseService";
 import { updateChatsLocally,fetchAllMessages } from "../store/extraInfoSlice";
 import MessageCard from "./Messagecard";
 import UserProfile from "./UserProfile";
+import fileService from "../appwrite/fileDatabaseService";
 
 
 export default function ChatUi({isChatVisible,setIsChatVisible}) {
@@ -23,7 +24,7 @@ export default function ChatUi({isChatVisible,setIsChatVisible}) {
           <UserProfile username={activeUser.username} avatar={activeUser.avatar}/>
         </div>
         <ChatSection activeChat={activeChat}/>
-        <Bottomsection
+        <SendMessage
           activeChat={activeChat}
           currentUserData={currentUserData}
           />
@@ -46,38 +47,72 @@ function ChatSection({activeChat}){
   const allMessages=useSelector(state=>state.extraInfo.allMessages)
   const activeChatMessages=allMessages[activeChat?.$id]
   return  <div ref={chatBoxRef} className="chat-section w-full grow p-3  max-h-[calc(100dch-68px)] overflow-y-scroll hide-scrollbar">
-     { activeChatMessages && activeChatMessages.length>0 && [...activeChatMessages].reverse()?.map(message=><MessageCard key={message.$id} content={message.content} sentAt={message.sentAt} senderId={message.senderId}/>)}
+     { activeChatMessages && activeChatMessages.length>0 && [...activeChatMessages].reverse()?.map(message=><MessageCard key={message.$id} {...message}/>)}
 </div>
 }
 
-function Bottomsection({ activeChat, currentUserData }) {
+function SendMessage({ activeChat, currentUserData }) {
+  const [selectedImage,setSelectedImage]=useState(null)
   const dispatch = useDispatch();
   const [message, setMessage] = useState("");
   async function sendMessage() {
     try {
-      if (message.trim() === "")
-        throw new Error("please type message before sending");
-      const payLoad = {
+      let payLoad={
+        chatId:activeChat.$id,
+        senderId:currentUserData.$id,
+        sentAt:new Date().toISOString(),
+      }
+      let payloadForUpdateChat = {
         chatId: activeChat.$id,
-        senderId: currentUserData.$id,
-        content: message,
-        sentAt: new Date().toISOString(),
-      };
-      const payloadForUpdateChat = {
-        chatId: activeChat.$id,
-        lastMessage: message,
         lastSentAt: payLoad.sentAt,
       };
+      if(selectedImage){
+        const imageResponse= await fileService.createFile(selectedImage)
+       payLoad={
+        ...payLoad,content:message || "",
+        imageURL:imageResponse.$id,
+        contentType:"image"
+       }
+       payloadForUpdateChat={...payloadForUpdateChat,lastMessageType:"image",lastMessage:message || ""}
+      }
+      else{
+        if (message.trim() === "")
+          throw new Error("please type message before sending");
+        payLoad={...payLoad,content:message,contentType:"text",imageURL:null}
+        payloadForUpdateChat={...payloadForUpdateChat,lastMessageType:"text",lastMessage:message}
+        
+      }
+      console.log(payloadForUpdateChat)
       await dataBaseService.createMessage(payLoad);
       await dataBaseService.updateChat(payloadForUpdateChat);
-      setMessage("");
       dispatch(updateChatsLocally(payloadForUpdateChat));
+      setMessage("");
+      setSelectedImage(null)
     } catch (error) {
       console.log(error);
     }
   }
   return (
     <div className="bottom-section h-16 border-t border-t-text w-full flex items-center justify-end p-3 gap-3 ">
+<label
+    htmlFor="send-photo"
+    className="whitespace-nowrap relative p-2.5 text-white font-medium rounded-full cursor-pointer bg-accent hover:bg-soft-accent "
+  >
+   <Plus/>
+    <input
+      id="send-photo"
+      type="file"
+      multiple
+      onChange={(e)=>setSelectedImage(e.target.files[0])}
+      className="hidden"
+    />
+
+{selectedImage && (
+   <span className="absolute bottom-11 left-1/2 -translate-x-[30%] p-1  rounded backdrop-blur-2xl font-normal text-sm bg-slate-400/30 text-center">Image Selected</span>
+  )}
+  </label>
+ 
+  
       <input
       onKeyDown={(e)=>{
         if(e.key=="Enter"){
