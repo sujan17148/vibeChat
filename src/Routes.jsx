@@ -13,6 +13,7 @@ import authService from "./appwrite/auth";
 import { useEffect,} from "react";
 import { login,fetchCurrentUserInfo,logout } from "./store/currentUserSlice";
 import { fetchAllFriends, fetchAllChats } from "./store/extraInfoSlice";
+import Loader from "./components/Loader";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,6 +44,6 @@ function ProtectedRoute() {
       .catch(() => dispatch(logout()))
   }, []);
 
-  if (loading) return <h1>Loading...  </h1>;
+  if (loading) return <Loader/>
   return currentUserStatus ? <Outlet /> : <Navigate to="/login" />;
 }

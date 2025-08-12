@@ -1,20 +1,13 @@
 import {EllipsisVertical,Sun} from "lucide-react"
-import {useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import Logout from "./LogoutButton"
 import SearchBar from "./Search"
-import { useEffect, useState } from "react"
-import {updateActiveChat} from "../store/extraInfoSlice"
+import { useState } from "react"
 import ChangeProfilePicture from "./ChangeProfilePricture"
 import UserProfile from "./UserProfile"
 export default function Dashboard({isChatVisible,setIsChatVisible}){
-  const dispatch=useDispatch()
   const currentUserData=useSelector(state=>state.currentUser.currentUserData)
-  const {allChats,allFriends}=useSelector(state=>state.extraInfo)
-  useEffect(()=>{
-     if(allChats && allChats.length>0){
-      dispatch(updateActiveChat(allChats[0]))
-     }
-  },[allChats])
+  const {allChats,allFriends,activeChat}=useSelector(state=>state.extraInfo)
     return currentUserData && <div className={`${isChatVisible ? "hidden": "flex"} sm:flex w-screen bg-secondary sm:max-w-105 md:1/3 overflow-hidden hide-scrollbar sm:border-r text-text border-r-text h-[100dvh]  flex-col`}>
     <div className="h-16 w-full flex items-center justify-between border-b border-b-text p-5">
       <p className="font-semibold text-2xl">VibeChat</p>
@@ -28,7 +21,7 @@ export default function Dashboard({isChatVisible,setIsChatVisible}){
                  {allFriends && allChats?.map(chat=>{
                   const userId=chat.users.find(id=>id!==currentUserData.$id)
                   const friend=allFriends.find(user=>user.$id===userId)
-                    return friend && <UserProfile setIsChatVisible={setIsChatVisible} key={chat.$id} $id={friend.$id} username={friend.username} avatar={friend.avatar} lastMessage={chat.lastMessage} lastMessageType={chat.lastMessageType} lastSentAt={chat.lastSentAt} isClickable={true}/>
+                    return friend && <UserProfile setIsChatVisible={setIsChatVisible} key={chat.$id} isActiveChat={chat.$id===activeChat?.$id}  $id={friend.$id} username={friend.username} avatar={friend.avatar} lastMessage={chat.lastMessage} lastMessageType={chat.lastMessageType} lastSentAt={chat.lastSentAt} isClickable={true}/>
                  })}
                </div>
             </div>

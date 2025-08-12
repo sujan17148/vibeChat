@@ -16,7 +16,7 @@ export default function UserProfile({username,avatar,...props}){
       props.setIsChatVisible(true)
     }
   }
-    return <div onClick={()=>props.isClickable && handleActiveChatChange()} className={`${props?.isClickable ? "p-3 hover:bg-slate-600/30": ""}   flex items-center justify-between  rounded`}> 
+    return <div onClick={()=>props.isClickable && handleActiveChatChange()} className={`${props?.isClickable && "p-3 hover:bg-slate-600/30"}  ${props.isActiveChat && "bg-slate-600/30"}  flex items-center justify-between  rounded`}> 
   <div  className="flex items-center gap-3">
      {avatar ?  <img
          src={fileService.getFileView(avatar)}
