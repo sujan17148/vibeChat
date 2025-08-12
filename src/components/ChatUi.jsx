@@ -85,10 +85,10 @@ function SendMessage({ activeChat, currentUserData }) {
       }
       dispatch(updateLastSentMessageLocally({...payLoad,status:"sending"}));
       dispatch(updateChatsLocally(payloadForUpdateChat));
-      await dataBaseService.createMessage(payLoad);
-      await dataBaseService.updateChat(payloadForUpdateChat);
       setMessage("");
       setSelectedImage(null)
+      await dataBaseService.createMessage(payLoad);
+      await dataBaseService.updateChat(payloadForUpdateChat);
     } catch (error) {
       console.log(error);
     }
@@ -109,9 +109,8 @@ function SendMessage({ activeChat, currentUserData }) {
     />
 
 {selectedImage && (
-   <span className="absolute bottom-11 left-1/2 md:-translate-x-[30%]  p-1  rounded backdrop-blur-2xl font-normal text-sm bg-slate-400/30 text-center">Image Selected</span>
-  )}
-  </label>
+   <span className="absolute bottom-12 left-2/3 md:-translate-x-[30%]  p-1  rounded backdrop-blur-2xl font-normal text-sm bg-slate-400/30 text-center">Image Selected</span>
+  )}  </label>
  
   
       <input
