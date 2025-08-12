@@ -61,16 +61,14 @@ const extraInfoslice = createSlice({
     state.allChats.unshift(action.payload)
   },
   updateLastSentMessageLocally:(state,action)=>{
-    const { chatId, sentAt } = action.payload;
+    const { chatId, $id } = action.payload;
 
-  if (!state.allMessages[chatId]) {
-    state.allMessages[chatId] = [];
-  }
+  if (!state.allMessages[chatId]) return;
 
   const messages = state.allMessages[chatId];
 
   // Find existing message with same sentAt
-  const index = messages.findIndex(msg => msg.sentAt === sentAt);
+  const index = messages.findIndex(msg => msg.$id === $id);
 
   if (index !== -1) {
     // Replace existing message

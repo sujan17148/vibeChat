@@ -6,6 +6,7 @@ import { updateChatsLocally,fetchAllMessages,updateLastSentMessageLocally } from
 import MessageCard from "./Messagecard";
 import UserProfile from "./UserProfile";
 import fileService from "../appwrite/fileDatabaseService";
+import { v4 as uuidv4 } from 'uuid';
 
 
 export default function ChatUi({isChatVisible,setIsChatVisible}) {
@@ -58,6 +59,7 @@ function SendMessage({ activeChat, currentUserData }) {
   async function sendMessage() {
     try {
       let payLoad={
+        $id:uuidv4(),
         chatId:activeChat.$id,
         senderId:currentUserData.$id,
         sentAt:new Date().toISOString(),

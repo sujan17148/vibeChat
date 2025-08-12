@@ -115,9 +115,9 @@ try{
   }
 
   //message realated service
-   async createMessage({chatId,senderId,content,sentAt,contentType,imageURL="null"}){
+   async createMessage({$id,chatId,senderId,content,sentAt,contentType,imageURL="null"}){
      try {
-      return  await this.databases.createDocument(conf.appwriteDatabaseId,conf.appwriteMessageCollectionId,ID.unique(),{chatId,senderId,content,sentAt,contentType,imageURL})
+      return  await this.databases.createDocument(conf.appwriteDatabaseId,conf.appwriteMessageCollectionId,$id,{chatId,senderId,content,sentAt,contentType,imageURL})
      } catch (error) {
       console.log("appwrite create message ",error.message)
      }
@@ -144,14 +144,17 @@ try{
 
 //watch changes in messages
 watchMessages(dispatch,currentUserId){
-return this.client.subscribe( `databases.${conf.appwriteDatabaseId}.collections.${conf.appwriteMessageCollectionId}.documents`,response=>{
+return  this.client.subscribe( `databases.${conf.appwriteDatabaseId}.collections.${conf.appwriteMessageCollectionId}.documents`,response=>{
   const message = response.payload;
-
-  // Replace if it's our own message
-  dispatch(updateLastSentMessageLocally({
-    ...message,
-    status: message.senderId === currentUserId ? "sent" : ""
-  }));
+  const {chatId}=message;
+     this.databases.getDocument(conf.appwriteDatabaseId,conf.appwriteChatCollectionId,chatId).then(chat=>{
+      if(chat.users.includes(currentUserId)){
+        dispatch(updateLastSentMessageLocally({
+          ...message,
+          status: message.senderId === currentUserId ? "sent" : ""
+        }));
+      }
+     })
 })
 }
 
