@@ -143,9 +143,15 @@ try{
    }
 
 //watch changes in messages
-watchMessages(dispatch){
+watchMessages(dispatch,currentUserId){
 return this.client.subscribe( `databases.${conf.appwriteDatabaseId}.collections.${conf.appwriteMessageCollectionId}.documents`,response=>{
-      dispatch(updateLastSentMessageLocally(response.payload))
+  const message = response.payload;
+
+  // Replace if it's our own message
+  dispatch(updateLastSentMessageLocally({
+    ...message,
+    status: message.senderId === currentUserId ? "sent" : ""
+  }));
 })
 }
 

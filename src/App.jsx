@@ -12,7 +12,7 @@ function App() {
    useEffect(()=>{
     const unSubscribeChat= dataBaseService.watchChat(dispatch,currentUserData?.$id)
     if (!allChats || allChats.length === 0) return;
-    const unSubscribeMessages=dataBaseService.watchMessages(dispatch)
+    const unSubscribeMessages=dataBaseService.watchMessages(dispatch,currentUserData?.$id)
     return ()=>{
       unSubscribeChat()
       unSubscribeMessages()

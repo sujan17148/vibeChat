@@ -16,9 +16,12 @@ export const fetchAllFriends=createAsyncThunk("currentUser/fetchAllFriends",
   }
 )
 export const fetchAllMessages=createAsyncThunk("currentUser/fetchAllMessages",
-  async(chatId)=>{
+  async(chatId,{getState})=>{
+    const state=getState()
+        const currentUserId=state.currentUser.currentUserData?.$id
    const response=await dataBaseService.getMessages(chatId)
-   return response.documents;
+   const messages=response.documents;
+   return {messages,currentUserId}
   }
 )
 const initialState = {
@@ -58,11 +61,24 @@ const extraInfoslice = createSlice({
     state.allChats.unshift(action.payload)
   },
   updateLastSentMessageLocally:(state,action)=>{
-    const {chatId}=action.payload
-    if (!state.allMessages[chatId]) {
-      state.allMessages[chatId] = [];
-    }
-    state.allMessages[chatId].unshift(action.payload)
+    const { chatId, sentAt } = action.payload;
+
+  if (!state.allMessages[chatId]) {
+    state.allMessages[chatId] = [];
+  }
+
+  const messages = state.allMessages[chatId];
+
+  // Find existing message with same sentAt
+  const index = messages.findIndex(msg => msg.sentAt === sentAt);
+
+  if (index !== -1) {
+    // Replace existing message
+    messages[index] = { ...messages[index], ...action.payload };
+  } else {
+    // Add new message at the start
+    messages.unshift(action.payload);
+  }
   }
   },
   extraReducers: (builder) => {
@@ -73,13 +89,17 @@ const extraInfoslice = createSlice({
       .addCase(fetchAllFriends.fulfilled,(state,action)=>{
         state.allFriends=action.payload
       })
-      .addCase(fetchAllMessages.fulfilled,(state,action)=>{
-        const messages=action.payload
-          if(messages.length>0){
-            const chatId=messages[0].chatId
-            state.allMessages[chatId]=messages
-          }
-      })
+      .addCase(fetchAllMessages.fulfilled, (state, action) => {
+        const { messages, currentUserId } = action.payload;
+      
+        if (messages.length > 0) {
+          const chatId = messages[0].chatId;
+          state.allMessages[chatId] = messages.map(msg => ({
+            ...msg,
+            status: msg.senderId === currentUserId ? "sent" : ""
+          }));
+        }
+      });      
   },
 });
 

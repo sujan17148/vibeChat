@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Send,Plus } from "lucide-react";
 import dataBaseService from "../appwrite/databaseService";
-import { updateChatsLocally,fetchAllMessages } from "../store/extraInfoSlice";
+import { updateChatsLocally,fetchAllMessages,updateLastSentMessageLocally } from "../store/extraInfoSlice";
 import MessageCard from "./Messagecard";
 import UserProfile from "./UserProfile";
 import fileService from "../appwrite/fileDatabaseService";
@@ -66,6 +66,7 @@ function SendMessage({ activeChat, currentUserData }) {
         chatId: activeChat.$id,
         lastSentAt: payLoad.sentAt,
       };
+      
       if(selectedImage){
         const imageResponse= await fileService.createFile(selectedImage)
        payLoad={
@@ -82,9 +83,10 @@ function SendMessage({ activeChat, currentUserData }) {
         payloadForUpdateChat={...payloadForUpdateChat,lastMessageType:"text",lastMessage:message}
         
       }
+      dispatch(updateLastSentMessageLocally({...payLoad,status:"sending"}));
+      dispatch(updateChatsLocally(payloadForUpdateChat));
       await dataBaseService.createMessage(payLoad);
       await dataBaseService.updateChat(payloadForUpdateChat);
-      dispatch(updateChatsLocally(payloadForUpdateChat));
       setMessage("");
       setSelectedImage(null)
     } catch (error) {
